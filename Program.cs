@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using minimalApi.Dominio.Interfaces;
-using minimalApi.Dominio.Servicoes;
+using MinimalApi.Dominio.Interfaces;
+using MinimalApi.Dominio.Servicoes;
 using MinimalApi.DTOs;
 using MinimalApi.Infraestrutura.Db;
 
