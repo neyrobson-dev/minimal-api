@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinimalApi.Dominio.Interfaces;
+using MinimalApi.Dominio.ModelViews;
 using MinimalApi.Dominio.Servicoes;
 using MinimalApi.DTOs;
 using MinimalApi.Infraestrutura.Db;
@@ -24,7 +25,7 @@ builder.Services.AddDbContext<DbContexto>(
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => Results.Json(new Home()));
 
 app.MapPost("/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
 {
