@@ -36,7 +36,7 @@ namespace MinimalApi.Dominio.Servicoes
             _contexto.SaveChanges();
         }
 
-        public List<Veiculo> Todos(int pagina = 1, string nome = null, string marca = null)
+        public List<Veiculo> Todos(int? pagina = 1, string nome = null, string marca = null)
         {
             var query = _contexto.Veiculos.AsQueryable();
 
@@ -52,7 +52,10 @@ namespace MinimalApi.Dominio.Servicoes
 
             int itensPerPagina = 10;
 
-            query = query.Skip((pagina - 1) * itensPerPagina).Take(itensPerPagina);
+            if (pagina != null)
+            {
+                query = query.Skip(((int)pagina - 1) * itensPerPagina).Take(itensPerPagina);
+            }
 
             return query.ToList();
         }
