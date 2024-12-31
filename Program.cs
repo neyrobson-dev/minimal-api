@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinimalApi.Dominio.DTOs;
 using MinimalApi.Dominio.Entidades;
+using MinimalApi.Dominio.Enums;
 using MinimalApi.Dominio.Interfaces;
 using MinimalApi.Dominio.ModelViews;
 using MinimalApi.Dominio.Servicoes;
@@ -32,7 +33,7 @@ app.MapGet("/", () => Results.Json(new Home())).WithTags("Home");
 #endregion
 
 #region Administradores
-app.MapPost("/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
+app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
 {
     if (administradorServico.Login(loginDTO) != null)
         return Results.Ok("Login com sucesso!");
@@ -53,7 +54,7 @@ app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, I
     if (string.IsNullOrEmpty(administradorDTO.Senha))
         validacao.Mensagens.Add("A Senha é um campo obrigatório!");
 
-    if (string.IsNullOrEmpty(administradorDTO.Perfil))
+    if (administradorDTO.Perfil == null)
         validacao.Mensagens.Add("O Perfil é um campo obrigatório!");
 
     if (validacao.Mensagens.Count > 0)
@@ -62,20 +63,37 @@ app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, I
     var administrador = new Administrador
     {
         Email = administradorDTO.Email,
-        Perfil = administradorDTO.Perfil,
         Senha = administradorDTO.Senha,
+        Perfil = administradorDTO.Perfil.ToString() ?? Perfil.Editor.ToString(),
     };
 
     administradorServico.Incluir(administrador);
 
-    return Results.Created($"/administradores/{administrador.Id}", administrador);
+    return Results.Created($"/administradores/{administrador.Id}", new AdministradorModelView
+    {
+        Id = administrador.Id,
+        Email = administrador.Email,
+        Perfil = administrador.Perfil
+    });
+
 }).WithTags("Administradores");
 
 app.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorServico administradorServico) =>
 {
+    var adms = new List<AdministradorModelView>();
     var administradores = administradorServico.Todos(pagina);
 
-    return Results.Ok(administradores);
+    foreach (var adm in administradores)
+    {
+        adms.Add(new AdministradorModelView
+        {
+            Id = adm.Id,
+            Email = adm.Email,
+            Perfil = adm.Perfil
+        });
+    }
+
+    return Results.Ok(adms);
 }).WithTags("Administradores");
 
 app.MapGet("/administradores/{id}", ([FromRoute] int id, IAdministradorServico administradorServico) =>
