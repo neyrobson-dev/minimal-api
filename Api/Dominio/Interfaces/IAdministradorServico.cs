@@ -8,6 +8,6 @@ namespace MinimalApi.Dominio.Interfaces
         Administrador? Login(LoginDTO loginDTO);
         List<Administrador> Todos(int? pagina = 1, string email = null, string perfil = null);
         Administrador? BuscarPorId(int id);
-        void Incluir(Administrador administrador);
+        Administrador Incluir(Administrador administrador);
     }
 }

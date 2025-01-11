@@ -47,10 +47,12 @@ namespace MinimalApi.Dominio.Servicoes
             return query.ToList();
         }
 
-        public void Incluir(Administrador administrador)
+        public Administrador Incluir(Administrador administrador)
         {
             _contexto.Administradores.Add(administrador);
             _contexto.SaveChanges();
+
+            return administrador;
         }
     }
 }
